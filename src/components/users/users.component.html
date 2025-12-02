@@ -1,0 +1,73 @@
+<div class="container mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Gestión de Usuarios</h3>
+    <button (click)="showAddForm.set(!showAddForm())" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 flex items-center">
+        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        {{ showAddForm() ? 'Cancelar' : 'Añadir Usuario' }}
+    </button>
+  </div>
+
+  @if (showAddForm()) {
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 mb-6">
+      <h4 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Detalles del Nuevo Usuario</h4>
+      <form (ngSubmit)="addUser()" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <input type="text" [(ngModel)]="newUser().name" name="name" placeholder="Nombre Completo" required class="md:col-span-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        <input type="email" [(ngModel)]="newUser().email" name="email" placeholder="Dirección de Correo Electrónico" required class="md:col-span-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        <select [(ngModel)]="newUser().role" name="role" required class="md:col-span-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          @for (role of userRoles; track role) {
+            <option [value]="role">{{ translateRole(role) }}</option>
+          }
+        </select>
+        <button type="submit" class="md:col-span-1 w-full bg-green-600 text-white rounded-md hover:bg-green-700 py-2">Guardar Usuario</button>
+      </form>
+    </div>
+  }
+
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md overflow-hidden">
+    @if (isLoading()) {
+      <div class="p-8 text-center text-gray-500 dark:text-gray-400">Cargando usuarios...</div>
+    } @else if (error()) {
+      <div class="p-8 text-center text-red-500">{{ error() }}</div>
+    } @else {
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+        <thead class="bg-gray-50 dark:bg-gray-800">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Nombre</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Correo Electrónico</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Rol</th>
+            <th scope="col" class="relative px-6 py-3">
+              <span class="sr-only">Acciones</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
+          @for (user of users(); track user.id) {
+            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ user.name }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                      [class]="user.role === 'admin' ? 'bg-red-100 text-red-800' : user.role === 'professor' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'">
+                  {{ translateRole(user.role) }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <button (click)="deleteUser(user.id)" class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+                  Eliminar
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-gray-500 dark:text-gray-400">No se encontraron usuarios.</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

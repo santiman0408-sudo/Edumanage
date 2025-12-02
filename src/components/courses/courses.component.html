@@ -1,0 +1,174 @@
+<div class="container mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Cursos Disponibles</h3>
+    @if (isAdmin()) {
+      <button (click)="showAddForm.set(!showAddForm())" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors duration-200 flex items-center">
+        <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/></svg>
+        {{ showAddForm() ? 'Cancelar' : 'Añadir Curso' }}
+      </button>
+    }
+  </div>
+
+  @if (showAddForm() && isAdmin()) {
+    <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-6 mb-6">
+      <h4 class="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Detalles del Nuevo Curso</h4>
+      <form (ngSubmit)="addCourse()" class="space-y-4">
+        <input type="text" [(ngModel)]="newCourse().title" name="title" placeholder="Título del Curso" required class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+        <textarea [(ngModel)]="newCourse().description" name="description" placeholder="Descripción" required rows="3" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <input type="text" [(ngModel)]="newCourse().professor" name="professor" placeholder="Profesor" required class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+           <input type="number" [(ngModel)]="newCourse().credits" name="credits" placeholder="Créditos" required min="1" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+           <button type="submit" class="w-full bg-green-600 text-white rounded-md hover:bg-green-700 py-2">Guardar Curso</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  <!-- Filter and Search Bar -->
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-md p-4 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
+      <!-- Search Input -->
+      <div class="md:col-span-2">
+        <label for="search" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Buscar por Título o Descripción</label>
+        <input type="text" id="search" [(ngModel)]="searchTerm" placeholder="Ej: Angular, Tailwind..."
+               class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+      </div>
+      <!-- Professor Filter -->
+      <div>
+        <label for="professor" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profesor</label>
+        <select id="professor" [(ngModel)]="selectedProfessor"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          <option value="">Todos</option>
+          @for (prof of uniqueProfessors(); track prof) {
+            <option [value]="prof">{{ prof }}</option>
+          }
+        </select>
+      </div>
+      <!-- Credits Filter -->
+      <div>
+        <label for="credits" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Créditos</label>
+        <select id="credits" [(ngModel)]="selectedCredits"
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+          <option value="">Todos</option>
+          @for (credit of uniqueCredits(); track credit) {
+            <option [value]="credit">{{ credit }}</option>
+          }
+        </select>
+      </div>
+      <!-- Reset Button -->
+      <div>
+          <button (click)="resetFilters()" class="w-full px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">
+            Limpiar
+          </button>
+      </div>
+    </div>
+  </div>
+
+  @if (isLoading()) {
+    <div class="p-8 text-center text-gray-500 dark:text-gray-400">Cargando cursos...</div>
+  } @else if (error()) {
+    <div class="p-8 text-center text-red-500">{{ error() }}</div>
+  } @else {
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (course of filteredCourses(); track course.id) {
+        <div (click)="selectCourse(course)" class="bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden flex flex-col transition-transform duration-300 hover:scale-105 cursor-pointer">
+          <div class="p-6 flex-grow">
+            <div class="flex justify-between items-start">
+              <h4 class="text-xl font-bold text-gray-800 dark:text-gray-100">{{ course.title }}</h4>
+              @if (isAdmin()) {
+                <button (click)="deleteCourse(course.id, $event)" class="text-gray-400 hover:text-red-500 z-10">
+                  <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                </button>
+              }
+            </div>
+            <p class="mt-2 text-gray-600 dark:text-gray-300 text-sm">{{ course.description }}</p>
+          </div>
+          <div class="px-6 py-4 bg-gray-50 dark:bg-gray-800 border-t dark:border-gray-700 flex justify-between items-center">
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Profesor</p>
+              <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">{{ course.professor }}</p>
+            </div>
+            <div>
+              <p class="text-xs text-gray-500 dark:text-gray-400 text-right">Créditos</p>
+              <p class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 text-right">{{ course.credits }}</p>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-span-full text-center py-12 text-gray-500 dark:text-gray-400">
+          <p>No se encontraron cursos que coincidan con tus criterios.</p>
+        </div>
+      }
+    </div>
+  }
+</div>
+
+<!-- Course Detail Modal -->
+@if (selectedCourse(); as course) {
+  <div class="fixed inset-0 bg-black/60 flex items-center justify-center z-50" (click)="closeModal()">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-2xl mx-4 transform transition-all" (click)="$event.stopPropagation()">
+      <div class="flex justify-between items-center p-6 border-b dark:border-gray-700">
+        @if (!isEditingCourse()) {
+          <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{{ course.title }}</h3>
+        } @else {
+           <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">Editando: {{ course.title }}</h3>
+        }
+        <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <!-- Modal Content -->
+      <div class="p-6">
+        @if (!isEditingCourse()) {
+          <p class="text-gray-700 dark:text-gray-300 mb-6">{{ course.description }}</p>
+          <div class="grid grid-cols-2 gap-4 text-sm">
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="font-semibold text-gray-600 dark:text-gray-400">Profesor</p>
+                  <p class="text-lg text-gray-900 dark:text-gray-100">{{ course.professor }}</p>
+              </div>
+              <div class="bg-gray-50 dark:bg-gray-800 p-4 rounded-lg">
+                  <p class="font-semibold text-gray-600 dark:text-gray-400">Créditos</p>
+                  <p class="text-lg text-indigo-600 dark:text-indigo-400 font-bold">{{ course.credits }}</p>
+              </div>
+          </div>
+        } @else if (editedCourse(); as editCourse) {
+          <!-- Edit Form -->
+          <form class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Título</label>
+              <input type="text" [(ngModel)]="editCourse.title" name="editTitle" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+             <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Descripción</label>
+              <textarea [(ngModel)]="editCourse.description" name="editDescription" rows="4" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Profesor</label>
+                <input type="text" [(ngModel)]="editCourse.professor" name="editProfessor" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Créditos</label>
+                <input type="number" [(ngModel)]="editCourse.credits" name="editCredits" min="1" class="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+              </div>
+            </div>
+          </form>
+        }
+      </div>
+
+      <!-- Modal Footer -->
+       <div class="flex justify-end items-center p-6 bg-gray-50 dark:bg-gray-800/50 border-t dark:border-gray-700 rounded-b-xl space-x-3">
+         <button (click)="closeModal()" class="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors">Cerrar</button>
+         @if (isAdmin()) {
+            @if (!isEditingCourse()) {
+              <button (click)="startEdit()" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors">Editar</button>
+            } @else {
+              <button (click)="cancelEdit()" class="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors">Cancelar</button>
+              <button (click)="saveCourse()" class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">Guardar Cambios</button>
+            }
+         }
+       </div>
+    </div>
+  </div>
+}

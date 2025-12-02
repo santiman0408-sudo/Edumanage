@@ -1,0 +1,6 @@
+
+{
+  "name": "EduManage - Sistema de Gestión de Cursos",
+  "description": "Una aplicación web para instituciones educativas para gestionar cursos y usuarios con control de acceso basado en roles, autenticación JWT y un panel de control centralizado.",
+  "requestFramePermissions": []
+}

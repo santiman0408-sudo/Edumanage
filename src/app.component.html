@@ -1,0 +1,71 @@
+<!-- This component acts as the main layout for authenticated users -->
+@if (authService.isAuthenticated()) {
+  <div class="flex h-screen bg-gray-100 dark:bg-gray-800 font-sans">
+    <!-- Sidebar -->
+    <aside class="w-64 flex-shrink-0 bg-white dark:bg-gray-900 border-r dark:border-gray-700">
+      <div class="h-full flex flex-col">
+        <!-- Logo -->
+        <div class="h-16 flex items-center justify-center border-b dark:border-gray-700">
+          <h1 class="text-2xl font-bold text-indigo-600 dark:text-indigo-400">EduManage</h1>
+        </div>
+        <!-- Navigation -->
+        <nav class="flex-1 mt-6">
+          <a routerLink="/dashboard" routerLinkActive="bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300" 
+             class="flex items-center px-6 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="ml-4">Panel de Control</span>
+          </a>
+          <a routerLink="/courses" routerLinkActive="bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300" 
+             class="flex items-center px-6 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"/></svg>
+            <span class="ml-4">Cursos</span>
+          </a>
+          @if (authService.isAdmin()) {
+            <a routerLink="/users" routerLinkActive="bg-indigo-50 dark:bg-gray-700 text-indigo-600 dark:text-indigo-300" 
+               class="flex items-center px-6 py-3 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              <span class="ml-4">Usuarios</span>
+            </a>
+          }
+        </nav>
+        <!-- User Profile -->
+        <div class="p-6 border-t dark:border-gray-700">
+          <div class="flex items-center">
+            <div class="w-10 h-10 bg-indigo-200 rounded-full flex items-center justify-center font-bold text-indigo-600">
+              {{ authService.currentUser()?.name?.charAt(0) }}
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-semibold text-gray-800 dark:text-gray-200">{{ authService.currentUser()?.name }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">{{ translateRole(authService.currentUser()?.role) }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Header -->
+      <header class="h-16 bg-white dark:bg-gray-900 border-b dark:border-gray-700 flex items-center justify-between px-6">
+        <div>
+          <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            {{ getTranslatedTitle() }}
+          </h2>
+        </div>
+        <div>
+          <button (click)="logout()" class="flex items-center text-sm font-medium text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors duration-200">
+            <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
+            Cerrar Sesión
+          </button>
+        </div>
+      </header>
+      <!-- Page Content -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-gray-800 p-6">
+        <router-outlet></router-outlet>
+      </main>
+    </div>
+  </div>
+} @else {
+  <!-- For unauthenticated users, the router outlet will render the login page -->
+  <router-outlet></router-outlet>
+}

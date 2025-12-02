@@ -1,0 +1,40 @@
+<div class="container mx-auto">
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-lg p-8">
+    <h3 class="text-3xl font-bold text-gray-800 dark:text-gray-100">¡Bienvenido de nuevo, {{ currentUser()?.name }}!</h3>
+    <p class="mt-2 text-gray-600 dark:text-gray-300">
+      Este es tu centro de control para gestionar tus actividades educativas.
+    </p>
+
+    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Profile Card -->
+      <div class="bg-indigo-50 dark:bg-indigo-900/50 p-6 rounded-lg border border-indigo-200 dark:border-indigo-800">
+        <h4 class="text-lg font-semibold text-indigo-800 dark:text-indigo-200">Tu Perfil</h4>
+        <div class="mt-4 space-y-2">
+          <p class="text-gray-700 dark:text-gray-300"><span class="font-medium">Correo electrónico:</span> {{ currentUser()?.email }}</p>
+          <p class="text-gray-700 dark:text-gray-300"><span class="font-medium">Rol:</span> <span class="px-2 py-1 text-xs font-semibold rounded-full bg-indigo-200 text-indigo-800">{{ translateRole(currentUser()?.role) }}</span></p>
+        </div>
+      </div>
+      
+      <!-- Quick Actions Card -->
+      <div class="bg-green-50 dark:bg-green-900/50 p-6 rounded-lg border border-green-200 dark:border-green-800">
+        <h4 class="text-lg font-semibold text-green-800 dark:text-green-200">Acciones Rápidas</h4>
+        <div class="mt-4 space-y-2">
+          <a routerLink="/courses" class="text-green-600 dark:text-green-300 hover:underline">Ver Tus Cursos</a>
+          @if (currentUser()?.role === 'admin') {
+            <a routerLink="/users" class="block text-green-600 dark:text-green-300 hover:underline">Gestionar Usuarios</a>
+          }
+        </div>
+      </div>
+      
+      <!-- System Status Card -->
+       <div class="bg-yellow-50 dark:bg-yellow-900/50 p-6 rounded-lg border border-yellow-200 dark:border-yellow-800">
+        <h4 class="text-lg font-semibold text-yellow-800 dark:text-yellow-200">Estado del Sistema</h4>
+        <div class="mt-4 flex items-center">
+           <span class="h-3 w-3 rounded-full bg-green-500 mr-3"></span>
+           <p class="text-gray-700 dark:text-gray-300">Todos los sistemas operativos.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
