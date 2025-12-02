@@ -1,6 +1,6 @@
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisito:**  Node.js
 
 
 1. Install dependencies:
