@@ -1,5 +1,6 @@
 EduManage 📚
 Plataforma de Gestión Educativa Full Stack
+
 EduManage es una plataforma web desarrollada con arquitectura MERN Stack enfocada en la administración académica y gestión educativa. El sistema permite administrar estudiantes, cursos, asistencia, calificaciones y autenticación por roles mediante una interfaz moderna, responsive y escalable.
 
 🚀 Características
