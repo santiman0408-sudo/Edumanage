@@ -85,7 +85,9 @@ Gestión Académica
 <img width="1390" height="772" alt="image" src="https://github.com/user-attachments/assets/c06f3bb9-997e-43b8-89f8-24632f401f13" />
 
 👨‍💻 Autor
+
 Adrian Daniel Santisteban Manrique
+
 Desarrollador Full Stack apasionado por la tecnología, inteligencia artificial y soluciones educativas digitales.
 
 📄 Licencia
