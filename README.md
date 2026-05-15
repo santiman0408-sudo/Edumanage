@@ -4,42 +4,62 @@ Plataforma de Gestión Educativa Full Stack
 EduManage es una plataforma web desarrollada con arquitectura MERN Stack enfocada en la administración académica y gestión educativa. El sistema permite administrar estudiantes, cursos, asistencia, calificaciones y autenticación por roles mediante una interfaz moderna, responsive y escalable.
 
 🚀 Características
+
 ✅ Autenticación segura con JWT
+
 ✅ Gestión de usuarios y roles
+
 ✅ Administración de cursos
+
 ✅ Registro de asistencia
+
 ✅ Gestión de calificaciones
+
 ✅ Dashboard administrativo
+
 ✅ Arquitectura cliente-servidor
+
 ✅ API RESTful
+
 ✅ Diseño responsive
+
 ✅ Integración con MongoDB
 
 🛠️ Tecnologías Utilizadas
-Frontend
-React.js
-Tailwind CSS
-React Router DOM
-Axios
-Backend
-Node.js
-Express.js
-MongoDB
-Mongoose
-JWT Authentication
-bcryptjs
+
+*Frontend
+-React.js
+-Tailwind CSS
+-React Router DOM
+-Axios
+
+*Backend
+-Node.js
+-Express.js
+-MongoDB
+-Mongoose
+-JWT Authentication
+-bcryptjs
 
 📂 Arquitectura del Proyecto
+
 EduManage/
+
 │
 ├── client/          # Frontend React
+
 │
 ├── server/          # Backend Express
+
 │
 ├── models/          # Modelos MongoDB
+
 ├── routes/          # Rutas API
+
 ├── controllers/     # Lógica del sistema
+
 ├── middleware/      # Middleware JWT/Auth
+
 │
 └── README.md
 
@@ -51,6 +71,7 @@ EduManage/
 | Estudiante    | Visualización académica        |
 
 ⚙️ Instalación Local
+
 1️⃣ Clonar repositorio
 git clone https://github.com/santiman0408-sudo/Edumanage.git
 
