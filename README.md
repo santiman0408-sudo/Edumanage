@@ -17,17 +17,17 @@ EduManage es una plataforma web desarrollada con arquitectura MERN Stack enfocad
 
 🛠️ Tecnologías Utilizadas
 Frontend
--React.js
--Tailwind CSS
--React Router DOM
--Axios
+React.js
+Tailwind CSS
+React Router DOM
+Axios
 Backend
--Node.js
--Express.js
--MongoDB
--Mongoose
--J-WT Authentication
--bcryptjs
+Node.js
+Express.js
+MongoDB
+Mongoose
+JWT Authentication
+bcryptjs
 
 📂 Arquitectura del Proyecto
 EduManage/
